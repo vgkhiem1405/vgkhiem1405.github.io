@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập / Đăng Ký</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @font-face {
+        font-family: 'LucideIcons';
+        src: url(https://cdn.jsdelivr.net/npm/lucide-static@latest/font/Lucide.ttf) format('truetype');
+      }
+      .lucide {
+        font-family: 'LucideIcons';
+        font-size: 1.5rem; /* Adjust size as needed */
+        line-height: 1;
+        vertical-align: middle; /* Align icons better */
+      }
+      /* Style for custom checkbox */
+      .custom-checkbox:checked {
+        background-color: #d8c9a7; /* custom-beige */
+        border-color: #d8c9a7; /* custom-beige */
+      }
+       .custom-checkbox:checked::before {
+         content: "\ea5e"; /* Lucide check icon */
+         font-family: 'LucideIcons';
+         font-size: 0.75rem; /* Smaller check icon */
+         color: white;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         width: 100%;
+         height: 100%;
+       }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                      'custom-beige': '#d8c9a7', // Approximate color from the image
+                      'custom-gray': '#a0a0a0',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        body {
+            @apply font-sans bg-white;
+        }
+        .input-field {
+             @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-beige focus:border-transparent text-sm;
+        }
+        .phone-input-container {
+            @apply flex items-center border border-gray-300 rounded-lg;
+        }
+        .country-code {
+            @apply px-3 py-3 text-sm text-gray-700 border-r border-gray-300 flex items-center cursor-pointer; /* Added cursor-pointer */
+        }
+        .country-code .lucide {
+             @apply text-xs ml-1 text-gray-500; /* Smaller arrow */
+        }
+        .phone-input {
+             @apply w-full px-4 py-3 focus:outline-none text-sm rounded-r-lg; /* Remove left border radius */
+        }
+        .action-button {
+             @apply w-full bg-custom-beige text-white py-3 rounded-lg font-semibold hover:bg-opacity-90 transition duration-200 text-center; /* Added text-center */
+        }
+        .tab {
+            @apply px-1 py-2 text-lg font-semibold text-gray-500 cursor-pointer border-b-2 border-transparent;
+        }
+        .tab.active {
+            @apply text-custom-beige border-custom-beige;
+        }
+        .form-container {
+            @apply mt-8 space-y-6; /* Increased top margin */
+        }
+        .custom-checkbox {
+             @apply appearance-none w-4 h-4 border border-gray-400 rounded-sm bg-white checked:bg-custom-beige checked:border-custom-beige focus:outline-none align-middle inline-block mr-2;
+             flex-shrink: 0; /* Prevent checkbox from shrinking */
+        }
+
+    </style>
+</head>
+<body class="flex justify-center items-start min-h-screen pt-5 px-4">
+    <div class="w-full max-w-sm">
+        <div class="flex justify-between items-center mb-6">
+            <button class="text-gray-600 p-2 -ml-2"> <span class="lucide">&#xea4f;</span>
+            </button>
+            <div class="w-8"></div> </div>
+
+        <div class="flex justify-center space-x-8 border-b border-gray-200">
+            <button id="login-tab" class="tab active">Login</button>
+            <button id="register-tab" class="tab">Register</button>
+        </div>
+
+        <div id="login-form" class="form-container">
+            <h2 class="text-2xl font-bold text-gray-900">Login</h2>
+            <p class="text-sm text-gray-500">
+                Bạn cũng có thể sử dụng <a href="#" class="text-custom-beige font-medium hover:underline">Đăng nhập Email</a>
+            </p>
+
+            <div>
+                <label for="login-phone" class="block text-sm font-medium text-gray-700 mb-1">Mobile phone number</label>
+                <div class="phone-input-container">
+                    <div class="country-code">
+                        <span>+84</span>
+                        <span class="lucide">&#xea4e;</span>
+                    </div>
+                    <input type="tel" id="login-phone" name="login-phone" class="phone-input" placeholder="Please enter your phone number">
+                </div>
+            </div>
+
+            <div>
+                <label for="login-password" class="block text-sm font-medium text-gray-700 mb-1">Login password</label>
+                <input type="password" id="login-password" name="login-password" class="input-field" placeholder="Please enter your login password">
+            </div>
+
+            <button class="action-button">Login</button>
+
+            <div class="text-center">
+                <span class="text-sm text-gray-600">Chưa có tài khoản? </span>
+                <button id="go-to-register" class="text-sm text-custom-beige font-medium hover:underline">Register</button>
+            </div>
+        </div>
+
+        <div id="register-form" class="form-container hidden">
+             <h2 class="text-2xl font-bold text-gray-900">Register an account</h2>
+             <p class="text-sm text-gray-500">
+                 Bạn cũng có thể sử dụng <a href="#" class="text-custom-beige font-medium hover:underline">Đăng ký Email</a>
+             </p>
+
+            <div>
+                <label for="register-phone" class="block text-sm font-medium text-gray-700 mb-1">Mobile phone number</label>
+                <div class="phone-input-container">
+                    <div class="country-code">
+                        <span>+84</span>
+                        <span class="lucide">&#xea4e;</span>
+                    </div>
+                    <input type="tel" id="register-phone" name="register-phone" class="phone-input" placeholder="Please enter your phone number">
+                </div>
+            </div>
+
+            <div>
+                <label for="register-password" class="block text-sm font-medium text-gray-700 mb-1">Set login password</label>
+                <input type="password" id="register-password" name="register-password" class="input-field" placeholder="6-20 characters, consisting of letters and numbers">
+                 </div>
+
+             <div>
+                <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm login password</label>
+                <input type="password" id="confirm-password" name="confirm-password" class="input-field" placeholder="Please enter the password again">
+            </div>
+
+             <div>
+                <label for="invitation-code" class="block text-sm font-medium text-gray-700 mb-1">Invitation code</label>
+                <input type="text" id="invitation-code" name="invitation-code" class="input-field" placeholder="Please enter the invitation code">
+            </div>
+
+             <div class="flex items-center">
+                 <input id="agree" name="agree" type="checkbox" class="custom-checkbox">
+                 <label for="agree" class="ml-2 block text-sm text-gray-700">
+                     Tôi đã đọc và đồng ý
+                     <a href="#" class="font-medium text-custom-beige hover:underline">Thỏa thuận người dùng</a>
+                 </label>
+             </div>
+
+            <button class="action-button">Register</button>
+
+             <div class="text-center">
+                <span class="text-sm text-gray-600">Đã có tài khoản? </span>
+                <button id="go-to-login" class="text-sm text-custom-beige font-medium hover:underline">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get references to elements
+        const loginTab = document.getElementById('login-tab');
+        const registerTab = document.getElementById('register-tab');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const goToRegisterLink = document.getElementById('go-to-register');
+        const goToLoginLink = document.getElementById('go-to-login');
+        // const pageTitle = document.getElementById('page-title'); // If dynamically changing title
+
+        // Function to switch tabs
+        function showForm(formToShow) {
+            if (formToShow === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+                // pageTitle.textContent = 'Login'; // Uncomment to change title
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                loginTab.classList.remove('active');
+                registerTab.classList.add('active');
+                 // pageTitle.textContent = 'Register an account'; // Uncomment to change title
+            }
+        }
+
+        // Event listeners for tabs
+        loginTab.addEventListener('click', () => showForm('login'));
+        registerTab.addEventListener('click', () => showForm('register'));
+
+        // Event listeners for the switch links/buttons
+        goToRegisterLink.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default link behavior if it were an <a> tag
+            showForm('register');
+        });
+
+        goToLoginLink.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default link behavior if it were an <a> tag
+            showForm('login');
+        });
+
+        // Initial state: Show login form
+        showForm('login');
+
+    </script>
+</body>
+</html>
