@@ -8,6 +8,7 @@
     <style>
       @font-face {
         font-family: 'LucideIcons';
+        /* Use a reliable CDN */
         src: url(https://cdn.jsdelivr.net/npm/lucide-static@latest/font/Lucide.ttf) format('truetype');
       }
       .lucide {
@@ -18,8 +19,8 @@
       }
       /* Style for custom checkbox */
       .custom-checkbox:checked {
-        background-color: #d8c9a7; /* custom-beige */
-        border-color: #d8c9a7; /* custom-beige */
+        background-color: #EAE0C8; /* Updated beige */
+        border-color: #EAE0C8; /* Updated beige */
       }
        .custom-checkbox:checked::before {
          content: "\ea5e"; /* Lucide check icon */
@@ -31,6 +32,14 @@
          align-items: center;
          width: 100%;
          height: 100%;
+       }
+       /* Style for validation errors */
+       .error-message {
+           @apply text-red-600 text-xs mt-1;
+           min-height: 1rem; /* Reserve space to prevent layout shifts */
+       }
+       .input-error {
+           @apply border-red-500 ring-red-500;
        }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,7 +53,9 @@
                         sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                      'custom-beige': '#d8c9a7', // Approximate color from the image
+                      // Slightly adjusted beige based on image sampling
+                      'custom-beige': '#EAE0C8',
+                      'custom-beige-text': '#A99978', // Text color for beige button
                       'custom-gray': '#a0a0a0',
                     }
                 }
@@ -53,48 +64,59 @@
     </script>
     <style type="text/tailwindcss">
         body {
-            @apply font-sans bg-white;
+            @apply font-sans bg-white text-gray-900;
         }
         .input-field {
-             @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-beige focus:border-transparent text-sm;
+             @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-custom-beige focus:border-custom-beige text-sm placeholder-gray-400;
         }
         .phone-input-container {
-            @apply flex items-center border border-gray-300 rounded-lg;
+            @apply flex items-center border border-gray-300 rounded-lg focus-within:ring-1 focus-within:ring-custom-beige focus-within:border-custom-beige;
+        }
+        .phone-input-container.input-error {
+             @apply border-red-500 ring-red-500;
         }
         .country-code {
-            @apply px-3 py-3 text-sm text-gray-700 border-r border-gray-300 flex items-center cursor-pointer; /* Added cursor-pointer */
+            @apply px-3 py-3 text-sm text-gray-700 border-r border-gray-300 flex items-center cursor-pointer bg-gray-50 rounded-l-lg; /* Added bg and rounded */
         }
         .country-code .lucide {
              @apply text-xs ml-1 text-gray-500; /* Smaller arrow */
         }
         .phone-input {
-             @apply w-full px-4 py-3 focus:outline-none text-sm rounded-r-lg; /* Remove left border radius */
+             @apply w-full px-4 py-3 focus:outline-none text-sm rounded-r-lg placeholder-gray-400;
         }
         .action-button {
-             @apply w-full bg-custom-beige text-white py-3 rounded-lg font-semibold hover:bg-opacity-90 transition duration-200 text-center; /* Added text-center */
+             @apply w-full bg-custom-beige text-custom-beige-text py-3 rounded-lg font-semibold hover:bg-opacity-90 transition duration-200 text-center;
         }
         .tab {
-            @apply px-1 py-2 text-lg font-semibold text-gray-500 cursor-pointer border-b-2 border-transparent;
+            @apply px-1 pb-2 pt-1 text-lg font-semibold text-gray-400 cursor-pointer border-b-2 border-transparent;
         }
         .tab.active {
-            @apply text-custom-beige border-custom-beige;
+            @apply text-custom-beige-text border-custom-beige; /* Use darker text for active tab */
         }
         .form-container {
-            @apply mt-8 space-y-6; /* Increased top margin */
+            @apply mt-6 space-y-5; /* Adjusted spacing */
+        }
+        .input-group {
+            @apply space-y-1; /* Group label, input, error */
         }
         .custom-checkbox {
              @apply appearance-none w-4 h-4 border border-gray-400 rounded-sm bg-white checked:bg-custom-beige checked:border-custom-beige focus:outline-none align-middle inline-block mr-2;
              flex-shrink: 0; /* Prevent checkbox from shrinking */
         }
+        .header-link {
+             @apply text-sm text-gray-600 font-medium hover:text-custom-beige-text;
+        }
 
     </style>
 </head>
-<body class="flex justify-center items-start min-h-screen pt-5 px-4">
+<body class="flex justify-center items-start min-h-screen pt-5 px-4 pb-10">
     <div class="w-full max-w-sm">
         <div class="flex justify-between items-center mb-6">
-            <button class="text-gray-600 p-2 -ml-2"> <span class="lucide">&#xea4f;</span>
-            </button>
-            <div class="w-8"></div> </div>
+            <button class="text-gray-600 p-2 -ml-2">
+                <span class="lucide text-xl">&#xea4f;</span> </button>
+            <h1 id="page-title" class="text-lg font-semibold text-gray-800">Login</h1>
+            <button id="header-action-link" class="header-link">Register</button>
+        </div>
 
         <div class="flex justify-center space-x-8 border-b border-gray-200">
             <button id="login-tab" class="tab active">Login</button>
@@ -104,126 +126,281 @@
         <div id="login-form" class="form-container">
             <h2 class="text-2xl font-bold text-gray-900">Login</h2>
             <p class="text-sm text-gray-500">
-                Bạn cũng có thể sử dụng <a href="#" class="text-custom-beige font-medium hover:underline">Đăng nhập Email</a>
+                Bạn cũng có thể sử dụng <a href="#" class="text-custom-beige-text font-medium hover:underline">Đăng nhập Email</a>
             </p>
 
-            <div>
-                <label for="login-phone" class="block text-sm font-medium text-gray-700 mb-1">Mobile phone number</label>
-                <div class="phone-input-container">
+            <div class="input-group">
+                <label for="login-phone" class="block text-sm font-medium text-gray-700">Mobile phone number</label>
+                <div class="phone-input-container" id="login-phone-container">
                     <div class="country-code">
                         <span>+84</span>
-                        <span class="lucide">&#xea4e;</span>
-                    </div>
+                        <span class="lucide">&#xea4e;</span> </div>
                     <input type="tel" id="login-phone" name="login-phone" class="phone-input" placeholder="Please enter your phone number">
                 </div>
+                <div id="login-phone-error" class="error-message"></div>
             </div>
 
-            <div>
-                <label for="login-password" class="block text-sm font-medium text-gray-700 mb-1">Login password</label>
+            <div class="input-group">
+                <label for="login-password" class="block text-sm font-medium text-gray-700">Login password</label>
                 <input type="password" id="login-password" name="login-password" class="input-field" placeholder="Please enter your login password">
+                <div id="login-password-error" class="error-message"></div>
             </div>
 
-            <button class="action-button">Login</button>
+            <button id="login-button" class="action-button mt-4">Login</button>
 
-            <div class="text-center">
+            <div class="text-center mt-4">
                 <span class="text-sm text-gray-600">Chưa có tài khoản? </span>
-                <button id="go-to-register" class="text-sm text-custom-beige font-medium hover:underline">Register</button>
+                <button id="go-to-register" class="text-sm text-custom-beige-text font-medium hover:underline">Register</button>
             </div>
         </div>
 
         <div id="register-form" class="form-container hidden">
              <h2 class="text-2xl font-bold text-gray-900">Register an account</h2>
              <p class="text-sm text-gray-500">
-                 Bạn cũng có thể sử dụng <a href="#" class="text-custom-beige font-medium hover:underline">Đăng ký Email</a>
+                 Bạn cũng có thể sử dụng <a href="#" class="text-custom-beige-text font-medium hover:underline">Đăng ký Email</a>
              </p>
 
-            <div>
-                <label for="register-phone" class="block text-sm font-medium text-gray-700 mb-1">Mobile phone number</label>
-                <div class="phone-input-container">
+            <div class="input-group">
+                <label for="register-phone" class="block text-sm font-medium text-gray-700">Mobile phone number</label>
+                <div class="phone-input-container" id="register-phone-container">
                     <div class="country-code">
                         <span>+84</span>
-                        <span class="lucide">&#xea4e;</span>
-                    </div>
+                        <span class="lucide">&#xea4e;</span> </div>
                     <input type="tel" id="register-phone" name="register-phone" class="phone-input" placeholder="Please enter your phone number">
                 </div>
+                 <div id="register-phone-error" class="error-message"></div>
             </div>
 
-            <div>
-                <label for="register-password" class="block text-sm font-medium text-gray-700 mb-1">Set login password</label>
+            <div class="input-group">
+                <label for="register-password" class="block text-sm font-medium text-gray-700">Set login password</label>
                 <input type="password" id="register-password" name="register-password" class="input-field" placeholder="6-20 characters, consisting of letters and numbers">
-                 </div>
+                 <div id="register-password-error" class="error-message"></div>
+            </div>
 
-             <div>
-                <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm login password</label>
+             <div class="input-group">
+                <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirm login password</label>
                 <input type="password" id="confirm-password" name="confirm-password" class="input-field" placeholder="Please enter the password again">
+                 <div id="confirm-password-error" class="error-message"></div>
             </div>
 
-             <div>
-                <label for="invitation-code" class="block text-sm font-medium text-gray-700 mb-1">Invitation code</label>
+             <div class="input-group">
+                <label for="invitation-code" class="block text-sm font-medium text-gray-700">Invitation code</label>
                 <input type="text" id="invitation-code" name="invitation-code" class="input-field" placeholder="Please enter the invitation code">
-            </div>
+                 <div id="invitation-code-error" class="error-message"></div> </div>
 
-             <div class="flex items-center">
-                 <input id="agree" name="agree" type="checkbox" class="custom-checkbox">
-                 <label for="agree" class="ml-2 block text-sm text-gray-700">
-                     Tôi đã đọc và đồng ý
-                     <a href="#" class="font-medium text-custom-beige hover:underline">Thỏa thuận người dùng</a>
-                 </label>
+             <div class="input-group flex items-start mt-3"> <input id="agree" name="agree" type="checkbox" class="custom-checkbox mt-1"> <div>
+                     <label for="agree" class="ml-2 block text-sm text-gray-700 leading-tight"> Tôi đã đọc và đồng ý
+                         <a href="#" class="font-medium text-custom-beige-text hover:underline">Thỏa thuận người dùng</a>
+                     </label>
+                     <div id="agree-error" class="error-message ml-2"></div>
+                 </div>
              </div>
 
-            <button class="action-button">Register</button>
+            <button id="register-button" class="action-button mt-4">Register</button>
 
-             <div class="text-center">
+             <div class="text-center mt-4">
                 <span class="text-sm text-gray-600">Đã có tài khoản? </span>
-                <button id="go-to-login" class="text-sm text-custom-beige font-medium hover:underline">Login</button>
+                <button id="go-to-login" class="text-sm text-custom-beige-text font-medium hover:underline">Login</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Get references to elements
+        // --- DOM Element References ---
         const loginTab = document.getElementById('login-tab');
         const registerTab = document.getElementById('register-tab');
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
         const goToRegisterLink = document.getElementById('go-to-register');
         const goToLoginLink = document.getElementById('go-to-login');
-        // const pageTitle = document.getElementById('page-title'); // If dynamically changing title
+        const pageTitle = document.getElementById('page-title');
+        const headerActionLink = document.getElementById('header-action-link');
 
-        // Function to switch tabs
+        // Login Form Elements
+        const loginPhoneInput = document.getElementById('login-phone');
+        const loginPhoneContainer = document.getElementById('login-phone-container');
+        const loginPhoneError = document.getElementById('login-phone-error');
+        const loginPasswordInput = document.getElementById('login-password');
+        const loginPasswordError = document.getElementById('login-password-error');
+        const loginButton = document.getElementById('login-button');
+
+        // Register Form Elements
+        const registerPhoneInput = document.getElementById('register-phone');
+        const registerPhoneContainer = document.getElementById('register-phone-container');
+        const registerPhoneError = document.getElementById('register-phone-error');
+        const registerPasswordInput = document.getElementById('register-password');
+        const registerPasswordError = document.getElementById('register-password-error');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const confirmPasswordError = document.getElementById('confirm-password-error');
+        const invitationCodeInput = document.getElementById('invitation-code');
+        // const invitationCodeError = document.getElementById('invitation-code-error'); // If needed
+        const agreeCheckbox = document.getElementById('agree');
+        const agreeError = document.getElementById('agree-error');
+        const registerButton = document.getElementById('register-button');
+
+        // --- Helper Functions ---
+
+        // Clears all error messages and styles
+        function clearErrors() {
+            const errorMessages = document.querySelectorAll('.error-message');
+            errorMessages.forEach(el => el.textContent = ''); // Clear text
+
+            const errorInputs = document.querySelectorAll('.input-error');
+            errorInputs.forEach(el => el.classList.remove('input-error')); // Remove border style
+
+            // Also remove error style from containers if necessary
+             if (loginPhoneContainer) loginPhoneContainer.classList.remove('input-error');
+             if (registerPhoneContainer) registerPhoneContainer.classList.remove('input-error');
+        }
+
+        // Shows an error message for a specific field
+        function showError(element, errorElement, message) {
+            if (errorElement) errorElement.textContent = message;
+            if (element) {
+                // Special handling for phone container
+                if (element.id === 'login-phone' && loginPhoneContainer) {
+                    loginPhoneContainer.classList.add('input-error');
+                } else if (element.id === 'register-phone' && registerPhoneContainer) {
+                    registerPhoneContainer.classList.add('input-error');
+                } else if (element.classList.contains('input-field')) {
+                    element.classList.add('input-error');
+                }
+                 // Could add styling for checkbox error if needed
+            }
+        }
+
+        // --- Tab Switching Logic ---
         function showForm(formToShow) {
+            clearErrors(); // Clear errors when switching tabs
             if (formToShow === 'login') {
                 loginForm.classList.remove('hidden');
                 registerForm.classList.add('hidden');
                 loginTab.classList.add('active');
                 registerTab.classList.remove('active');
-                // pageTitle.textContent = 'Login'; // Uncomment to change title
+                pageTitle.textContent = 'Login';
+                headerActionLink.textContent = 'Register'; // Link to the other action
+                headerActionLink.onclick = () => showForm('register'); // Update link action
             } else {
                 loginForm.classList.add('hidden');
                 registerForm.classList.remove('hidden');
                 loginTab.classList.remove('active');
                 registerTab.classList.add('active');
-                 // pageTitle.textContent = 'Register an account'; // Uncomment to change title
+                pageTitle.textContent = 'Register an account';
+                headerActionLink.textContent = 'Login'; // Link to the other action
+                headerActionLink.onclick = () => showForm('login'); // Update link action
             }
         }
 
-        // Event listeners for tabs
+        // --- Validation Logic ---
+
+        // Basic phone validation (you might want a more specific regex)
+        function validatePhone(phone) {
+            return /^\d{9,11}$/.test(phone); // Assumes 9-11 digits
+        }
+
+        // Password validation (6-20 chars, letters and numbers)
+        function validatePassword(password) {
+            return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/.test(password);
+        }
+
+        function handleLoginSubmit(event) {
+            event.preventDefault(); // Prevent actual form submission
+            clearErrors();
+            let isValid = true;
+
+            const phone = loginPhoneInput.value.trim();
+            const password = loginPasswordInput.value.trim();
+
+            // Validate Phone
+            if (!phone) {
+                showError(loginPhoneInput, loginPhoneError, 'Vui lòng nhập số điện thoại.');
+                isValid = false;
+            }
+            // else if (!validatePhone(phone)) { // Optional stricter validation
+            //     showError(loginPhoneInput, loginPhoneError, 'Số điện thoại không hợp lệ.');
+            //     isValid = false;
+            // }
+
+            // Validate Password
+            if (!password) {
+                showError(loginPasswordInput, loginPasswordError, 'Vui lòng nhập mật khẩu.');
+                isValid = false;
+            }
+
+            if (isValid) {
+                console.log('Login submitted:', { phone, password });
+                alert('Đăng nhập thành công! (Console log)'); // Replace with actual login logic
+            }
+        }
+
+        function handleRegisterSubmit(event) {
+            event.preventDefault(); // Prevent actual form submission
+            clearErrors();
+            let isValid = true;
+
+            const phone = registerPhoneInput.value.trim();
+            const password = registerPasswordInput.value.trim();
+            const confirmPassword = confirmPasswordInput.value.trim();
+            const invitationCode = invitationCodeInput.value.trim(); // Optional
+            const agreed = agreeCheckbox.checked;
+
+            // Validate Phone
+            if (!phone) {
+                showError(registerPhoneInput, registerPhoneError, 'Vui lòng nhập số điện thoại.');
+                isValid = false;
+            }
+            // else if (!validatePhone(phone)) { // Optional stricter validation
+            //     showError(registerPhoneInput, registerPhoneError, 'Số điện thoại không hợp lệ.');
+            //     isValid = false;
+            // }
+
+            // Validate Password
+            if (!password) {
+                showError(registerPasswordInput, registerPasswordError, 'Vui lòng nhập mật khẩu.');
+                isValid = false;
+            } else if (!validatePassword(password)) {
+                showError(registerPasswordInput, registerPasswordError, 'Mật khẩu phải dài 6-20 ký tự, gồm chữ và số.');
+                isValid = false;
+            }
+
+            // Validate Confirm Password
+            if (!confirmPassword) {
+                showError(confirmPasswordInput, confirmPasswordError, 'Vui lòng xác nhận mật khẩu.');
+                isValid = false;
+            } else if (password && password !== confirmPassword) {
+                showError(confirmPasswordInput, confirmPasswordError, 'Mật khẩu xác nhận không khớp.');
+                isValid = false;
+            }
+
+            // Validate Agreement Checkbox
+            if (!agreed) {
+                showError(null, agreeError, 'Bạn phải đồng ý với Thỏa thuận người dùng.'); // No input element to highlight directly
+                isValid = false;
+            }
+
+            if (isValid) {
+                console.log('Register submitted:', { phone, password, invitationCode, agreed });
+                 alert('Đăng ký thành công! (Console log)'); // Replace with actual registration logic
+            }
+        }
+
+
+        // --- Event Listeners ---
         loginTab.addEventListener('click', () => showForm('login'));
         registerTab.addEventListener('click', () => showForm('register'));
+        goToRegisterLink.addEventListener('click', (e) => { e.preventDefault(); showForm('register'); });
+        goToLoginLink.addEventListener('click', (e) => { e.preventDefault(); showForm('login'); });
+        headerActionLink.addEventListener('click', (e) => {
+             e.preventDefault();
+             // The action is set dynamically in showForm
+         });
 
-        // Event listeners for the switch links/buttons
-        goToRegisterLink.addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent default link behavior if it were an <a> tag
-            showForm('register');
-        });
+        // Attach validation handlers to buttons
+        loginButton.addEventListener('click', handleLoginSubmit);
+        registerButton.addEventListener('click', handleRegisterSubmit);
 
-        goToLoginLink.addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent default link behavior if it were an <a> tag
-            showForm('login');
-        });
-
-        // Initial state: Show login form
-        showForm('login');
+        // --- Initial State ---
+        showForm('login'); // Show login form by default
 
     </script>
 </body>
